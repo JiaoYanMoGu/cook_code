@@ -53,7 +53,7 @@ void myDistortPoints(const Mat &src_img,const cv::Matx33d & cameraMatrix,
         }
 }
 
-
+//迭代求解：推导过程见https://github.com/JiaoYanMoGu/research_note/blob/master/OpenCV%E7%9B%B8%E6%9C%BA%E7%95%B8%E5%8F%98%E4%B8%8E%E5%8E%BB%E7%95%B8%E5%8F%98.md
 //void myUndistortPoints(const std::vector<cv::Point2d> & src, std::vector<cv::Point2d> & dst,
 //                       const cv::Mat & cameraMatrix, const cv::Mat & distortionCoeff)
 //{
