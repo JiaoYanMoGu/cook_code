@@ -215,6 +215,32 @@ void answer()
 
 }
 
+
+Matrix3d quaternion_2_rotation(Quaterniond q)
+{
+    q.normalize();//归一化
+    //q: w,x,y,z
+    q.coeffs();
+    double w=q.w();
+    double x=q.x();
+    double y=q.y();
+    double z=q.z();
+    Matrix3d rotation = Matrix3d::Identity();
+    rotation(0,0) = 1 - 2*y*y - 2*z*z;
+    rotation(0,1) = 2*x*y - 2*z*w;
+    rotation(0,2) = 2*x*z + 2*y*w;
+    rotation(1,0) = 2*x*y + 2*z*w;
+    rotation(1,1) = 1 - 2*x*x - 2*z*z;
+    rotation(1,2) = 2*y*z - 2*x*w;
+    rotation(2,0) = 2*x*z - 2*y*w;
+    rotation(2,1) = 2*y*z + 2*x*w;
+    rotation(2,2) = 1 - 2*x*x - 2*y*y;
+    cout<<"Rotation: \n"<<rotation<<endl;
+    cout<<"Eigen to Rotation Matrix"<<endl;
+    cout<<q.toRotationMatrix()<<endl;
+    return rotation;
+}
+
 int main()
 {
     practice1();
@@ -225,5 +251,6 @@ int main()
     transform();
     little_carrot();
     answer();
+    quaternion_2_rotation(Quaterniond(0.35,0.2,0.3,0.1));
     return 0;
 }
