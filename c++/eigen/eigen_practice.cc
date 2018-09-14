@@ -241,6 +241,38 @@ Matrix3d quaternion_2_rotation(Quaterniond q)
     return rotation;
 }
 
+void verify()
+{
+    //Eigen 中旋转的运动方向为原始坐标系1->目标坐标系2
+    //对应的坐标变换为将2系中的坐标变换到1系中
+    //验证可以参考如下代码:
+    //   原始坐标系1
+    //    ^y
+    //    |
+    //    |
+    //    o----->x
+    //         ^x'
+    //         |
+    //         |
+    // y'<-----o
+    //由坐标系1旋转90度到坐标系2：
+    //如果对应的变换为R21,则结果应该为：(1,-1,0)
+    //如果对应的变换为R12,则结果应该为：(-1,1,0)
+    //结果为(-1,1,0),故AngleAxisd表示的是坐标系的旋转
+    Vector3d v(1,1,0);
+    AngleAxisd rotation_vector(M_PI/2,Eigen::Vector3d(0,0,1));
+    cout<<rotation_vector*v<<endl;
+}
+
+void rotation_test()
+{
+    //Quaterniond._transformVector()效果与R*v等价
+    Quaterniond q(AngleAxisd(M_PI/2,Eigen::Vector3d(0,0,1)));
+    Vector3d v(1,1,0);
+    Vector3d result = q._transformVector(v);
+    cout<<result<<endl;
+}
+
 int main()
 {
     practice1();
@@ -252,5 +284,7 @@ int main()
     little_carrot();
     answer();
     quaternion_2_rotation(Quaterniond(0.35,0.2,0.3,0.1));
+    verify();
+    rotation_test();
     return 0;
 }
