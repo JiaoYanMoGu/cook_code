@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/gradient_descent.dir/gradient_descent.cpp.o  -o gradient_descent -rdynamic 
