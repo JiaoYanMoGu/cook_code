@@ -3,6 +3,7 @@
 #include <cmath>
 #include <Eigen/Dense>
 #include "timer.hpp"
+#include "random.hpp"
 using namespace std;
 using namespace Eigen;
 
@@ -12,10 +13,11 @@ using namespace Eigen;
 //////////////////////////////////
 class Problem{
 public:
-    Problem(double a,double b,double c)
-    :lambda_(1.0),max_num_iteration_(1000),min_step_(1e-10),
-     abc_(a,b,c)
+    Problem(double init_a,double init_b,double init_c)
+    :lambda_(1e-4),max_num_iteration_(100000),min_step_(1e-8),
+     abc_(init_a,init_b,init_c)
     {
+        J_ = Vector3d::Zero();
     }
     ~Problem() = default;
     static double f(double a,double b,double c,double x)
@@ -30,7 +32,6 @@ public:
     void add_observation(double x, double y)
     {
         observations_.emplace_back(Vector2d(x,y));
-        J_.resize(observations_.size(),3);
     }
     bool solve()
     {
@@ -38,11 +39,13 @@ public:
         while(iteration_num++ < max_num_iteration_)
         {
             cal_J();
-            Vector3d delta  = -lambda_*J_;
+            //cal_Lambda();
+            Vector3d delta  = -lambda_*J_; 
             if(delta.norm() < min_step_) break;
+            last_abc_ = abc_;
             abc_  += delta;
             cal_Cost();
-            std::cout<<"Cost: "<<cost_<<"\n";
+            cout<<"a,b,c: "<<abc_(0)<<" "<<abc_(1)<<" "<<abc_(2)<<"cost: "<<cost_<<"\n";
         } 
         if(iteration_num < max_num_iteration_)
         {
@@ -56,20 +59,21 @@ public:
     }
     void cal_J()
     {
+        last_J_ = J_;
         J_ = Vector3d::Zero();
         for(size_t i=0; i< observations_.size(); i++)
         {
             double x = observations_[i](0);
             double y = observations_[i](1);
-            J_(0)  += -x*x*f(x);
-            J_(1)  += -x*f(x);
-            J_(2)  += -f(x);
+            J_(0)  += -(y-f(x))*x*x*f(x);
+            J_(1)  += -(y-f(x))*x*f(x);
+            J_(2)  += -(y-f(x))*f(x);
         }
     }
 
     void cal_Lambda()
     {
-        lambda_ =  lambda_;
+        lambda_ = lambda_;
     }
 
     void cal_Cost()
@@ -89,7 +93,9 @@ private:
     int max_num_iteration_;
     double min_step_;
     Eigen::Vector3d abc_;
+    Eigen::Vector3d last_abc_;
     Eigen::Vector3d J_;
+    Eigen::Vector3d last_J_;
     std::vector<Vector2d> observations_;
     double cost_;
 };
@@ -100,7 +106,14 @@ private:
 
 int main()
 {
-    double a=1.0,b=0.5,c=0.2;
-    Problem p(a,b,c);
-    return 0;
+    double a=0.01,b=0.2,c=0.3;
+    Problem p(a,b+0.01,c+0.02);
+    for(int i=0; i<100; i++)
+    {
+        double x = RandomReal<double>(0.0,2.0);
+        double y = Problem::f(a,b,c,x);
+        cout<<"Add: "<<x<<" "<<y<<"\n";
+        p.add_observation(x,y);
+    }
+    return p.solve();
 }
