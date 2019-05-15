@@ -115,5 +115,9 @@ int main()
         cout<<"Add: "<<x<<" "<<y<<"\n";
         p.add_observation(x,y);
     }
-    return p.solve();
+    Timer t;
+    t.Start();
+    p.solve();
+    t.Stop();
+    return 0;
 }
