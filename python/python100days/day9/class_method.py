@@ -35,11 +35,14 @@ class Clock(object):
     
 
 def main():
-    clock = Clock.now()    
-    while True:
+    clock = Clock.now()
+    count = 0
+    while count < 20:
         print(clock.show())
         sleep(0.1)
         clock.run()
+        count+=1
 
 if __name__ == "__main__":
     main()
+    print(type(Clock.now()))
