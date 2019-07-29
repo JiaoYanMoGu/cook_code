@@ -34,10 +34,16 @@ int main(int argc, char** argv) {
     cv::Mat t_vec = T_C1_C0.col(3).rowRange(0, 3);
 
     cv::Mat R1, R2, P1, P2, Q;
-    stereoRectify(K_l, D_l, K_r, D_r, Size(640, 480), R, t_vec, R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, 1.0);
-    cout << R1 << endl;
-    cout << P1 << endl;
-    cout << R2 << endl;
-    cout << P2 << endl;
+    stereoRectify(K_l, D_l, K_r, D_r, Size(640, 480), R, t_vec, R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, 0.0);
+    cout <<"R1\n"<< R1 << endl;
+    cout <<"P1\n"<< P1 << endl;
+    cout <<"R2\n"<< R2 << endl;
+    cout <<"P2\n"<< P2 << endl;
+    double x = t_vec.at<double>(0,0);
+    double y = t_vec.at<double>(1,0);
+    double z = t_vec.at<double>(2,0);
+    double b = sqrt(x*x + y*y + z*z);
+    cout<<"baseline: "<<b*100<<" cm"<<endl;
+    cout<<"bf: "<<b*P1.at<double>(0,0)<<endl;
     return 0;
 }

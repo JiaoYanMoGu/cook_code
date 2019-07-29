@@ -2,7 +2,7 @@
 // Created by a409 on 7/17/19.
 //
 
-// 测试Orb-SLAM2 和 Openvslam 对与双目的处理方式
+// 测试Orb-SLAM2 和 Openvslam 对双目的处理方式
 
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
